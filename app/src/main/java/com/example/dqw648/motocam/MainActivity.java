@@ -6,20 +6,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     //String
-    String name,id,phone;
+    private String name,id,phone;
 
     //Button
-    ImageButton btn_camera;
+    private ImageButton btn_camera,btn_userinfo;
+    private ImageView img_receive_snapshot;
 
     //TextView
-    TextView txt_id, txt_name, txt_phone;
+    private TextView txt_id, txt_name, txt_phone;
 
+    //ListView
+    private ListView lv_identity;
+    private ArrayList<String> strArr;
+    private ArrayAdapter<String> Adapter;
+
+    //variables
+    private int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,11 +40,40 @@ public class MainActivity extends AppCompatActivity {
 
         //Button
         btn_camera = (ImageButton) findViewById(R.id.btn_camera);
+        btn_userinfo = (ImageButton) findViewById(R.id.btn_userinfo);
 
         //TextView
         txt_id = (TextView) findViewById(R.id.txt_id);
         txt_name = (TextView) findViewById(R.id.txt_name);
         txt_phone = (TextView) findViewById(R.id.txt_phone);
+
+        //ImageView
+        img_receive_snapshot = (ImageView) findViewById(R.id.img_receive_snapshot); //Will used to set the snapshot image
+
+        //ListView
+        lv_identity = (ListView) findViewById(R.id.lv_identity);
+        strArr = new ArrayList<String>();
+        Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, strArr);
+        lv_identity.setAdapter(Adapter);
+
+        //Buttons
+        btn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent camera_view = new Intent(MainActivity.this, CameraView.class);
+                startActivity(camera_view);
+            }
+        });
+
+        btn_userinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                count++;
+                Adapter.clear(); //clear the previous items
+                strArr.add(count + "");
+                Adapter.notifyDataSetChanged();
+            }
+        });
 
         //Getting data from CameraView
         if(savedInstanceState == null){
@@ -50,15 +92,6 @@ public class MainActivity extends AppCompatActivity {
                 txt_phone.setText(phone);
             }
         }
-
-        //Buttons
-        btn_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent camera_view = new Intent(MainActivity.this, CameraView.class);
-                startActivity(camera_view);
-            }
-        });
 
     }
 
